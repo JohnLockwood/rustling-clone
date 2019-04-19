@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -24,10 +25,18 @@ type Course struct {
 	Sections []CourseSection `json:"sections"`
 }
 
+type cwd interface {
+	getCWD() string
+}
+
+
 type CourseLoader struct {
 	dir cwd
 }
 
+// NewCourseLoader returns a CourseLoader with a default cwd interface if cwd is nil
+// (which returns the current working directory).  This enables us to inject
+// different
 func NewCourseLoader(dir cwd) *CourseLoader {
 	dirLoader := dir
 	if dir == nil {
@@ -38,16 +47,28 @@ func NewCourseLoader(dir cwd) *CourseLoader {
 	}
 }
 
-func (self *CourseLoader) getCourceConfigurationFile() string {
+func (self *CourseLoader) getCourseConfigurationFile() string {
 	return self.dir.getCWD() + "/" + "config.json"
+}
+
+func (self * CourseLoader) configFileExists() bool {
+	if fileInfo, err := os.Stat(self.getCourseConfigurationFile()); err == nil {
+		return ! fileInfo.IsDir()
+	}
+	return false
 }
 
 // GetCourse loads the course object from the root directory
 // TODO more error handling
-func (self *CourseLoader) GetCourse() Course {
+func (self *CourseLoader) GetCourse() (*Course, error) {
+
+	if(!self.configFileExists()) {
+		// TODO use real program name.
+		return nil, errors.New("Configuration file not found.  This program must be run from the program directory.")
+	}
 
 	// Open our jsonFile
-	jsonFile, err := os.Open(self.getCourceConfigurationFile())
+	jsonFile, err := os.Open(self.getCourseConfigurationFile())
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -64,7 +85,7 @@ func (self *CourseLoader) GetCourse() Course {
 	err = json.Unmarshal(byteValue, &course)
 	// defer the closing of our jsonFile so that we can parse it later on
 
-	return course
+	return &course, nil
 
 }
 

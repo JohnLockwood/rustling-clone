@@ -7,10 +7,6 @@ import (
 
 type DirectoryServer struct{}
 
-type cwd interface {
-	getCWD() string
-}
-
 
 func (DirectoryServer) getCWD() string {
 	dir, err := os.Getwd()
