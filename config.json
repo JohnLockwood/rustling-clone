@@ -1,0 +1,22 @@
+{
+  "language": "golang",
+  "sections": [
+    {
+      "name": "Variables",
+      "modules": [
+        {
+          "file": "exercises/variables/variables1.go",
+          "mode": "run"
+        },
+        {
+          "file": "exercises/variables/variables2-test.go",
+          "mode": "test"
+        },
+        {
+          "file": "exercises/variables/variables1.md",
+          "mode": "document"
+        }
+      ]
+    }
+  ]
+}
