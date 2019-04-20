@@ -59,7 +59,6 @@ func (self * CourseLoader) configFileExists() bool {
 }
 
 // GetCourse loads the course object from the root directory
-// TODO more error handling
 func (self *CourseLoader) GetCourse() (*Course, error) {
 
 	if(!self.configFileExists()) {
@@ -78,15 +77,19 @@ func (self *CourseLoader) GetCourse() (*Course, error) {
 	defer jsonFile.Close()
 
 	// read our opened json file as a byte array.
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		return nil, err
+	}
 
 	course := Course{}
 
 	err = json.Unmarshal(byteValue, &course)
-	// defer the closing of our jsonFile so that we can parse it later on
+	if err != nil {
+		return nil, err
+	}
 
 	return &course, nil
-
 }
 
 
