@@ -14,21 +14,20 @@ type CourseModule struct {
 }
 
 type CourseSection struct {
-	Name string `json:"name"`
+	Name    string         `json:"name"`
 	Modules []CourseModule `json:"modules"`
 }
 
 // Course is the main data structure that holds information about our course lessons.
 // It is read from config.json and should be considered read-only
 type Course struct {
-	Language string `json:"language"`
+	Language string          `json:"language"`
 	Sections []CourseSection `json:"sections"`
 }
 
 type cwd interface {
 	getCWD() string
 }
-
 
 type CourseLoader struct {
 	dir cwd
@@ -51,9 +50,9 @@ func (self *CourseLoader) getCourseConfigurationFile() string {
 	return self.dir.getCWD() + "/" + "config.json"
 }
 
-func (self * CourseLoader) configFileExists() bool {
+func (self *CourseLoader) configFileExists() bool {
 	if fileInfo, err := os.Stat(self.getCourseConfigurationFile()); err == nil {
-		return ! fileInfo.IsDir()
+		return !fileInfo.IsDir()
 	}
 	return false
 }
@@ -61,7 +60,7 @@ func (self * CourseLoader) configFileExists() bool {
 // GetCourse loads the course object from the root directory
 func (self *CourseLoader) GetCourse() (*Course, error) {
 
-	if(!self.configFileExists()) {
+	if !self.configFileExists() {
 		// TODO use real program name.
 		return nil, errors.New("Configuration file not found.  This program must be run from the program directory.")
 	}
@@ -91,6 +90,3 @@ func (self *CourseLoader) GetCourse() (*Course, error) {
 
 	return &course, nil
 }
-
-
-
