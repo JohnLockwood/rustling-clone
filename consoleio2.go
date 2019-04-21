@@ -24,6 +24,14 @@ func example6() {
 		log.Panicln(err)
 	}
 
+	if err := g.SetKeybinding("", 'q', gocui.ModNone, quit); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.SetKeybinding("", 'n', gocui.ModNone, next); err != nil {
+		log.Panicln(err)
+	}
+
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Panicln(err)
 	}
@@ -42,4 +50,17 @@ func layout(g *gocui.Gui) error {
 
 func quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
+}
+
+func next(g *gocui.Gui, v *gocui.View) error {
+	maxX, maxY := g.Size()
+
+	if v, err := g.SetView("next", 0, 0, maxX-1, maxY-1); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+		fmt.Fprintln(v, "Display something here!")
+		fmt.Fprintln(v, "./configuration/configuration.go")
+	}
+	return nil
 }

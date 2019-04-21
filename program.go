@@ -6,6 +6,7 @@ import (
 	"rustling-clone/configuration"
 )
 
+
 func main() {
 	loader := configuration.NewCourseLoader(nil)
 	course, err := loader.GetCourse()
@@ -14,6 +15,6 @@ func main() {
 		os.Exit(-1)
 	}
 
-	example6()
+	example8()
 	fmt.Println(course.Language)
 }
